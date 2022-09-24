@@ -159,8 +159,7 @@ def MCTS(board, player, depth):
             record[id][win] += 1
             record[id][0] += 1
             localWin += 1 if win == player else 0
-            localTot += 1
-            
+            localTot += 1          
         board[x, y] = EMPTY
 
     return (localWin, localTot)
