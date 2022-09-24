@@ -1,4 +1,4 @@
-from .rules import *
+from .rules import * #指明相关文件
 from .ai import *
 
 def TrainIter():
