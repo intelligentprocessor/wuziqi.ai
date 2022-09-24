@@ -18,21 +18,6 @@ def Dump(fileId):  #写文件
     with open(fileName, 'w') as f:
         json.dump(record,f)
 
-def CurStep(board):  #返回空格子数量
-    res = 0
-    for i in range(board.shape[0]):
-        for j in range(board.shape[1]):
-            res += 1 if board[i,j] != 0 else 0
-    return res
-
-def Serialize(board):  #把棋盘转化成一个数字  用于哈希
-    res = ''
-    for i in range(board.shape[0]):
-        tmp = 0
-        for j in range(board.shape[1]):
-            tmp = tmp * 3 + board[i,j]
-        res += str(tmp)
-    return res
 
 def GetLegalPositions(board):   #返回可下的棋盘格子列表
     res = []
@@ -184,17 +169,19 @@ def AIPlayer(board, player):
     maxpos = (0, 0)
     for i in legal:
         board[i[0], i[1]] = player
-        id = Serialize(board)
-        item = record[id]
+        id = Serialize(board)       
         if (id not in record):
             value=ValueFunc(board, player, i)
             if((value>mini) and (maxi==-1)):
                 mini=value
                 maxpos=i
-        elif ((item[player] / item[0]+math.sqrt(2*math.log(father_item[0])/item[0])) >= maxi):
-            maxi = item[player] / item[0]
-            maxpos = i
+        else: 
+            item = record[id]
+            ucb=(item[player] / item[0]+math.sqrt(2*math.log(father_item[0])/item[0])) 
+            if((ucb) >= maxi):
+                maxi =ucb
+                maxpos = i
         board[i[0], i[1]] = EMPTY
    
-    print("Max pos =", maxpos, ", prob. of win:", maxi)
+    print("Max pos =", maxpos, ", prob. of win:", maxi,",mini:",mini)
     return maxpos
