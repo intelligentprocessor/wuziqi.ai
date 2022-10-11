@@ -1,13 +1,13 @@
 from tarfile import RECORDSIZE
 import numpy as np  #使用numpy库里的随机函数
+from .ui import *
 #from .history import *
 BLACK = 1  #棋盘格子属性 黑棋 白棋 无棋
 WHITE = 2
 EMPTY = 0
-
+record = {}   #  训练数据数组
 width = 15   #棋子宽度与高度
 height = 15
-
 directions = [      #表示格子的四个方向
     (0, 1),  # 0°
     (1, 1),  # 45°
@@ -41,7 +41,7 @@ def PositionInBoard(board, x, y):    #判断落子是否在棋盘内
 # 1 玩家1获胜
 # 2 玩家2获胜
 def Step(board, player, stepFunc):    #棋来！
-    x, y = stepFunc(board, player)
+    x, y = stepFunc(board, player,)
 
     if(CurStep(board)==225): #和棋则白棋赢
         return 2,x,y
@@ -73,7 +73,6 @@ def Step(board, player, stepFunc):    #棋来！
         
         if (cnt >= 5):  #判断赢家
             return player, x, y
-    
     return 0, x, y     #如果没有赢家 继续
 
 def Print(board):
@@ -109,12 +108,17 @@ def Play(board, stepFuncs, display = True):
         else:
             currentPlayer = 3 - currentPlayer  #切换对手
     for i in history:
-        record[i][0]+=1
-        record[i][res]+=1
+        if(i not in record):
+            record[i]=[1,0,0]
+            record[i][res]=1            
+        else:
+            record[i][0]+=1
+            record[i][res]+=1
     return res
-
+'''
 def Player(board, player): 
     print("Player input as (x,y):")
     s = input()
     s = s.split(',') #以逗号为界分割
     return int(s[0]), int(s[1])
+'''

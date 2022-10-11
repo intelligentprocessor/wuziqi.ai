@@ -1,12 +1,12 @@
+from tkinter import ALL
 from .rules import *
 import random
 import json
 import math
-
 attempts = 25   #分支数
 totAttempts = 4000   #计算下一步的最大时间
 curAttempts = 0  #当前已经算了多少时间
-record = {}   #  训练数据数组
+all_time=0
 
 def Load(fileId):  #读文件
     fileName = "./wuziqi/record/file%d.json" % fileId   #分散为10个文件
@@ -151,9 +151,12 @@ def MCTS(board, player, depth):
 
 
 def AIPlayer(board, player):
+    import time
+    import datetime
     global curAttempts
     curAttempts = 0
-
+    global all_time
+    t=time.time()
     print("AI thinking...")
 
     if (CurStep(board) == 0):
@@ -163,6 +166,8 @@ def AIPlayer(board, player):
 
     legal =GetLegalPositions(board)
     father_id=Serialize(board)
+    if(father_id not in record):
+        record[father_id]=[1,0,0]
     father_item=record[father_id]
     maxi = -1
     mini=-2
@@ -177,11 +182,14 @@ def AIPlayer(board, player):
                 maxpos=i
         else: 
             item = record[id]
-            ucb=(item[player] / item[0]+math.sqrt(2*math.log(father_item[0])/item[0])) 
-            if((ucb) >= maxi):
-                maxi =ucb
+            ucb1=(item[player] / item[0]+math.sqrt(2*math.log(father_item[0])/item[0])) 
+            if((ucb1) >= maxi):
+                maxi =ucb1
                 maxpos = i
         board[i[0], i[1]] = EMPTY
-   
-    print("Max pos =", maxpos, ", prob. of win:", maxi,",mini:",mini)
+    tt=time.time()
+    tt-=t
+    all_time+=tt
+    print("Max pos =", maxpos, ", prob. of win:",maxi)
+    print("time=",tt,"all_time=",all_time)
     return maxpos
